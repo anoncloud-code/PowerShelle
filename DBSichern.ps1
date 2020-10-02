@@ -7,6 +7,27 @@
 [String]$bakName="",
 [String]$PWFile="C:\tmp\PW.txt"
 )
+###########################################################################
+#Um das unsignierte Script auszuführen, eines der Möglichkeiten nutzen    #
+#powershell.exe -noprofile -executionpolicy bypass -command DBSichern.ps1 #
+#Get-ExecutionPolicy Unrestricted                                         #
+###########################################################################
+#Verschlüsseltes PWFile erzeugen:                                         #
+#read-host -assecurestring | convertfrom-securestring | out-file $PWFile  #
+#$PW = cat $PWFile | ConvertTo-SecureString                               #
+###########################################################################
+
+if (Get-Module -ListAvailable -Name SqlServer) {
+} else 
+{
+    Write-Host "Die SQL Module fehlen auf diesem PC/Server"
+    switch(Read-Host "Sollen die Tools jetzt installiert werden?[y/N]"){
+    
+    y {Install-Module -Name SqlServer; break}
+    n {Write-Host "Bitte installieren Sie das SQL Server Management Studio oder die PSTools SqlServer" ;exit ; break}
+    default {"Ungültige Eingabe";exit; break}
+    }
+}
 
 $date= (Get-Date).ToString("yyyyMd")
 
